@@ -18,7 +18,7 @@ const particlesOptions = {
       value: 175,
       density: {
         enable: true,
-        value_area: 800
+        value_area: 1000
       }
     }
   }
@@ -35,10 +35,10 @@ class App extends Component {
 
   onInputChange = (event) => {
     this.setState({input: event.target.value});
-  };
+  }
 
   onButtonSubmit = () => {
-    this.setState({imageURL: this.state.input});
+    this.setState({imageUrl: this.state.input});
     app.models
       .predict(
         Clarifai.FACE_DETECT_MODEL, 
@@ -46,7 +46,7 @@ class App extends Component {
       .then(
       function(response) {
         console.log(response);
-        console.log('input url:', this.state.input)
+        console.log('input url:', this.state.input);
       },
       function(err) {
         // there was an error
