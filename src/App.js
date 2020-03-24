@@ -30,13 +30,32 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      input: '',
-      imageUrl: '',
+      input: "",
+      imageUrl: "",
       box: {},
-      route: 'signin', //keeps track of where we are on the page
-      isSignedIn: false
+      route: "signin", //keeps track of where we are on the page
+      isSignedIn: false,
+      user: {
+        id: "",
+        name: "",
+        email: "",
+        entries: 0,
+        joined: ""
+      }
     };
   }
+
+  loadUser = data => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined
+      }
+    });
+  };
 
   calculateFaceLocation = data => {
     const clarifaiFace =
@@ -68,23 +87,26 @@ class App extends Component {
         this.displayFaceBox(this.calculateFaceLocation(response))
       )
       .catch(err => console.log(err));
-  }
+  };
 
   onRouteChange = route => {
-    if (route === 'signout') {
+    if (route === "signout") {
       this.setState({ isSignedIn: false });
-    } else if ( route === 'home') {
+    } else if (route === "home") {
       this.setState({ isSignedIn: true });
     }
     this.setState({ route: route });
-  }
+  };
 
   render() {
     const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        <Navigation
+          isSignedIn={isSignedIn}
+          onRouteChange={this.onRouteChange}
+        />
         {route === "home" ? (
           <div>
             {" "}
@@ -94,15 +116,12 @@ class App extends Component {
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
             />
-            <FaceRecognition
-              imageUrl={imageUrl}
-              box={box}
-            />{" "}
+            <FaceRecognition imageUrl={imageUrl} box={box} />{" "}
           </div>
         ) : route === "signin" ? (
           <SignIn onRouteChange={this.onRouteChange} />
         ) : (
-          <Register onRouteChange={this.onRouteChange} />
+          <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
         )}
       </div>
     );
